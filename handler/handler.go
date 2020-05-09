@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo/v4"
 
 	"github.com/shiba-hiro/note-api-by-go/repository"
@@ -40,6 +41,10 @@ func showNote(c echo.Context) error {
 	c.Logger().Infof("showNote called. id: %s", id)
 	note, err := repository.GetNote(id)
 	if err != nil {
+		if gorm.IsRecordNotFoundError(err) {
+			return c.String(http.StatusNotFound, "{\"message\": \"Specified note was not found\"}")
+		}
+
 		message := fmt.Sprintf("Unexpected error occurred: %v", err)
 		c.Logger().Error(message)
 		return c.String(http.StatusInternalServerError, fmt.Sprintf("{\"message\": %s}", message))
@@ -65,7 +70,7 @@ func createNote(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, fmt.Sprintf("{\"message\": %s}", message))
 	}
 	c.Logger().Info("Successfully created note")
-	return c.JSON(http.StatusOK, &note)
+	return c.JSON(http.StatusCreated, &note)
 }
 
 func updateNote(c echo.Context) error {

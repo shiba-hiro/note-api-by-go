@@ -15,52 +15,42 @@ type Note struct {
 }
 
 func ListNotes() ([]Note, error) {
-	// TODO: Implement
-	return []Note{
-		{
-			ID:        "6eca4cf8-91f9-11ea-96cf-00163ef6bb2e",
-			Title:     "foo",
-			Content:   "bar",
-			CreatedAt: time.Date(2020, time.January, 1, 0, 0, 0, 0, time.UTC),
-			UpdatedAt: time.Date(2020, time.January, 1, 0, 0, 0, 0, time.UTC),
-		},
-	}, nil
+	notes := []Note{}
+	err := DB.Find(&notes).Error
+	return notes, err
 }
 
 func GetNote(id string) (Note, error) {
-	// TODO: Implement
-	return Note{
-		ID:        id,
-		Title:     "foo",
-		Content:   "bar",
-		CreatedAt: time.Date(2020, time.January, 1, 0, 0, 0, 0, time.UTC),
-		UpdatedAt: time.Date(2020, time.January, 1, 0, 0, 0, 0, time.UTC),
-	}, nil
+	note := Note{ID: id}
+	err := DB.Where(&note).First(&note).Error
+	return note, err
 }
 
 func CreateNote(title string, content string) (Note, error) {
-	// TODO: Implement
-	return Note{
+	note := Note{
 		ID:        uuid.New().String(),
 		Title:     title,
 		Content:   content,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
-	}, nil
+	}
+	err := DB.Create(&note).Error
+	return note, err
 }
 
 func UpdateNote(id string, title string, content string) (Note, error) {
-	// TODO: Implement
-	return Note{
-		ID:        id,
-		Title:     title,
-		Content:   content,
-		CreatedAt: time.Date(2020, time.January, 1, 0, 0, 0, 0, time.UTC),
-		UpdatedAt: time.Now(),
-	}, nil
+	note := Note{ID: id}
+	if err := DB.Where(&note).FirstOrCreate(&note).Error; err != nil {
+		return note, err
+	}
+
+	note.Title = title
+	note.Content = content
+	note.UpdatedAt = time.Now()
+	err := DB.Save(&note).Error
+	return note, err
 }
 
 func DeleteNote(id string) error {
-	// TODO: Implement
-	return nil
+	return DB.Delete(&Note{ID: id}).Error
 }

@@ -9,6 +9,7 @@ import (
 	"github.com/labstack/gommon/log"
 
 	"github.com/shiba-hiro/note-api-by-go/handler"
+	"github.com/shiba-hiro/note-api-by-go/repository"
 )
 
 func main() {
@@ -20,6 +21,13 @@ func main() {
 
 	e.GET("/health", health)
 	handler.Register(e.Group("/api/v1"))
+
+	db, err := repository.OpenDbConnection()
+	if err != nil {
+		e.Logger.Fatalf("Cannot open Database: %v\n", db)
+		return
+	}
+	defer db.Close()
 
 	e.Logger.Fatal(e.Start(":1323"))
 }
