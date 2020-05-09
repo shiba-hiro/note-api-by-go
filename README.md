@@ -62,3 +62,9 @@ $ http DELETE localhost:1323/api/v1/notes/00a2e8c6-ccc8-4413-a6ae-521099180dcd
 HTTP/1.1 204 No Content
 Date: Sat, 09 May 2020 15:09:24 GMT
 ```
+
+## Testing
+
+```
+$ go test -v github.com/shiba-hiro/note-api-by-go/...
+```

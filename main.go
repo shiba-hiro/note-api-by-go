@@ -32,7 +32,6 @@ func main() {
 	e.Logger.Fatal(e.Start(":1323"))
 }
 
-// Handler
 func health(c echo.Context) error {
 	return c.String(http.StatusOK, "{\"app\": {\"message\": \"Application is running\", \"success\": true}}")
 }
